@@ -1,39 +1,61 @@
 package exchange.currencyexchange.controllers;
 
-import exchange.currencyexchange.dto.CurrencyDTO;
-import exchange.currencyexchange.exceptions.CurrencyAddException;
-import exchange.currencyexchange.services.CurrencyServices;
+import exchange.currencyexchange.dto.ExceptionDto;
+import exchange.currencyexchange.dto.ExchangeRateDTO;
+import exchange.currencyexchange.exceptions.ErrorMessage;
+import exchange.currencyexchange.exceptions.MessageException;
+import exchange.currencyexchange.services.ExchangeServices;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.Map;
+
+import java.math.BigDecimal;
 
 @RestController
 @RequiredArgsConstructor
 public class CurrencyExchangeController {
 
-    private final CurrencyServices currencyServices;
+    private final ExchangeServices exchangeServices;
 
-    @PostMapping(consumes = "application/x-www-form-urlencoded", path = "/currencies")
-    public ResponseEntity<?> addCurrency(
-            @RequestParam String name,
-            @RequestParam String code,
-            @RequestParam String sign) {
+    @PostMapping(consumes = "application/x-www-form-urlencoded", path = "/exchangeRates")
+    public ResponseEntity<?> addExchangeRate(@RequestParam String baseCurrencyCode, @RequestParam String targetCurrencyCode, @RequestParam BigDecimal rate) {
         try {
-            CurrencyDTO currencyDTO = currencyServices.saveCurrency(name, code, sign);
-            return new ResponseEntity<>(currencyDTO, HttpStatus.CREATED);
-        } catch (CurrencyAddException e) {
-            return new ResponseEntity<>(Map.of("message", e.getMessage()), HttpStatus.BAD_REQUEST);
+            ExchangeRateDTO exchangeRateDTO = exchangeServices.addExchangeRate(baseCurrencyCode, targetCurrencyCode, rate);
+            return ResponseEntity.status(201).body(exchangeRateDTO);
+        } catch (MessageException e) {
+            ErrorMessage error = e.getErrorMessage();
+            return ResponseEntity.status(error.getStatus()).body(new ExceptionDto(error.getMessage()));
         } catch (Exception e) {
-            return new ResponseEntity<>(Map.of("message", e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(ErrorMessage.UNKNOWN_ERROR.getStatus()).body(new ExceptionDto(ErrorMessage.UNKNOWN_ERROR.getMessage()));
         }
     }
 
-    @GetMapping(path = "/currencies")
-    public ResponseEntity<List<CurrencyDTO>> getCurrencies() {
-        return ResponseEntity.ok(currencyServices.getCurrencies());
+    @GetMapping(path = "/exchangeRates")
+    public ResponseEntity<?> getAllExchangeRates() {
+        return ResponseEntity.ok(exchangeServices.getExchangeRates());
     }
 
+    @GetMapping(path = "/exchangeRate/{code}")
+    public ResponseEntity<?> getExchangeRatesByCurrencies(@PathVariable(required = false) String code) {
+        try {
+            return ResponseEntity.ok(exchangeServices.getExchangeRatesByCurrencies(code));
+        } catch (MessageException e) {
+            ErrorMessage error = e.getErrorMessage();
+            return ResponseEntity.status(error.getStatus()).body(new ExceptionDto(error.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(ErrorMessage.UNKNOWN_ERROR.getStatus()).body(new ExceptionDto(ErrorMessage.UNKNOWN_ERROR.getMessage()));
+        }
+    }
+
+    @PatchMapping(consumes = "application/x-www-form-urlencoded", path = "/exchangeRate/{code}")
+    public ResponseEntity<?> changeExchangeRateByCurrencies(@PathVariable String code, @RequestParam BigDecimal rate) {
+        try {
+            return ResponseEntity.ok(exchangeServices.changeExchangeRate(code, rate));
+        } catch (MessageException e) {
+            ErrorMessage error = e.getErrorMessage();
+            return ResponseEntity.status(error.getStatus()).body(new ExceptionDto(error.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(ErrorMessage.UNKNOWN_ERROR.getStatus()).body(new ExceptionDto(ErrorMessage.UNKNOWN_ERROR.getMessage()));
+        }
+    }
 }

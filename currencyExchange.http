@@ -1,7 +1,24 @@
+###DONE
+GET http://localhost:8080/currencies
+###DONE
+GET http://localhost:8080/currency/USD
+
+###DONE
 POST http://localhost:8080/currencies
 Content-Type: application/x-www-form-urlencoded
 
-name=UAH&code=DD&sign=@
+name=Dollar2&code=USD2&sign=$2
 
-###
-GET http://localhost:8080/currencies
+###DONE
+GET http://localhost:8080/exchangeRate
+###DONE
+GET http://localhost:8080/exchangeRate/USDEUR
+
+###DONE
+POST http://localhost:8080/exchangeRates
+Content-Type: application/x-www-form-urlencoded
+
+baseCurrencyCode=USD&targetCurrencyCode=EUR&rate=0.99
+
+
+

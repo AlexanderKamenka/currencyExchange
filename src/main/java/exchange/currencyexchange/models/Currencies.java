@@ -1,8 +1,7 @@
-package exchange.currencyexchange.model;
+package exchange.currencyexchange.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.Id;
 
 @Entity
 @Getter
@@ -11,10 +10,9 @@ import org.springframework.data.annotation.Id;
 @AllArgsConstructor
 @Builder
 public class Currencies {
-    @jakarta.persistence.Id
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "FullName")
     private String name;

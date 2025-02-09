@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CurrencyDTO {
-    private Long id;
+    private Integer id;
     private String name;
     private String code;
     private String sign;
