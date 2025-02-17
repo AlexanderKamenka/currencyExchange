@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS EXCHANGE_RATES (
     id INT AUTO_INCREMENT PRIMARY KEY,
     baseCurrencyId INT NOT NULL,
     targetCurrencyId INT NOT NULL,
-    rate DECIMAL(6, 2) NOT NULL,
+    rate DECIMAL(10, 4) NOT NULL,
     CONSTRAINT fk_base_currency FOREIGN KEY (baseCurrencyId) REFERENCES CURRENCIES(id) ON DELETE CASCADE,
     CONSTRAINT fk_target_currency FOREIGN KEY (targetCurrencyId) REFERENCES CURRENCIES(id) ON DELETE CASCADE,
     CONSTRAINT unique_currency_pair UNIQUE (baseCurrencyId, targetCurrencyId)

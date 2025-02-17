@@ -1,5 +1,6 @@
 package exchange.currencyexchange.services;
 
+import exchange.currencyexchange.dto.ExchangeAmountResultDto;
 import exchange.currencyexchange.dto.ExchangeRateDTO;
 import exchange.currencyexchange.exceptions.MessageException;
 
@@ -14,4 +15,7 @@ public interface ExchangeServices {
     ExchangeRateDTO getExchangeRatesByCurrencies(String code) throws MessageException;
 
     ExchangeRateDTO changeExchangeRate(String code, BigDecimal rate) throws MessageException;
+
+    ExchangeAmountResultDto getExchangeAmount(String from, String to, BigDecimal amount) throws MessageException;
+
 }

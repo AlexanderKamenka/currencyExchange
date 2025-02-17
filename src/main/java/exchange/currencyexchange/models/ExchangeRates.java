@@ -17,12 +17,14 @@ public class ExchangeRates {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "BASECURRENCYID")
-    private Integer baseCurrencyId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "BASECURRENCYID", referencedColumnName = "id")
+    private Currencies baseCurrency;
 
-    @Column(name = "TARGETCURRENCYID")
-    private Integer targetCurrencyId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "TARGETCURRENCYID", referencedColumnName = "id")
+    private Currencies targetCurrency;
 
-    @Column(name = "rate", nullable = false, precision = 6, scale = 2) // Decimal(6, 2)
+    @Column(name = "rate", nullable = false, precision = 10, scale = 4)
     private BigDecimal rate;
 }

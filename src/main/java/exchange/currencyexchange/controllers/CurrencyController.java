@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -45,9 +46,10 @@ public class CurrencyController {
             return ResponseEntity.ok(currency);
         } catch (MessageException e) {
             ErrorMessage error = e.getErrorMessage();
-            return ResponseEntity.status(error.getStatus()).body(new ExceptionDto(error.getMessage()));  // Ответ с ошибкой
+            return ResponseEntity.status(error.getStatus()).body(new ExceptionDto(error.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(ErrorMessage.UNKNOWN_ERROR.getStatus()).body(new ExceptionDto(ErrorMessage.UNKNOWN_ERROR.getMessage()));  // Общая ошибка
+            return ResponseEntity.status(ErrorMessage.UNKNOWN_ERROR.getStatus()).body(new ExceptionDto(ErrorMessage.UNKNOWN_ERROR.getMessage()));
         }
     }
+
 }

@@ -58,4 +58,20 @@ public class CurrencyExchangeController {
             return ResponseEntity.status(ErrorMessage.UNKNOWN_ERROR.getStatus()).body(new ExceptionDto(ErrorMessage.UNKNOWN_ERROR.getMessage()));
         }
     }
+
+    @GetMapping(path = "/exchange")
+    public ResponseEntity<?> getExchange(@RequestParam String from,
+                                         @RequestParam String to,
+                                         @RequestParam BigDecimal amount) throws MessageException {
+
+        try {
+            return ResponseEntity.ok(exchangeServices.getExchangeAmount(from, to, amount));
+        } catch (MessageException e) {
+            ErrorMessage error = e.getErrorMessage();
+            return ResponseEntity.status(error.getStatus()).body(new ExceptionDto(error.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(ErrorMessage.UNKNOWN_ERROR.getStatus()).body(new ExceptionDto(ErrorMessage.UNKNOWN_ERROR.getMessage()));
+        }
+
+    }
 }

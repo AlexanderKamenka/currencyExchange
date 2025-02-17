@@ -1,6 +1,7 @@
 package exchange.currencyexchange.services;
 
 import exchange.currencyexchange.dto.CurrencyDTO;
+import exchange.currencyexchange.dto.ExchangeAmountResultDto;
 import exchange.currencyexchange.exceptions.ErrorMessage;
 import exchange.currencyexchange.exceptions.MessageException;
 import exchange.currencyexchange.models.Currencies;
@@ -8,6 +9,7 @@ import exchange.currencyexchange.repository.CurrenciesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +21,15 @@ public class CurrencyServicesImpl implements CurrencyServices {
 
     @Override
     public CurrencyDTO saveCurrency(String name, String code, String sign) throws MessageException {
-        if (code == null || code.isBlank()) {
+        if (code.length() < 3 ){
+            throw new MessageException(ErrorMessage.CURRENCY_SAVE_ERROR);
+        }
+        String codeCut = code.length() > 3 ? code.substring(0, 3) : code;
+        String nameCut = name.length() > 20 ? name.substring(0, 20) : name;
+        String signCut = sign.length() > 3 ? sign.substring(0, 3) : sign;
+
+
+        if (code.isBlank()) {
             throw new MessageException(ErrorMessage.CURRENCY_CODE_EMPTY);
         }
 
@@ -28,9 +38,9 @@ public class CurrencyServicesImpl implements CurrencyServices {
         }
 
         Currencies model = new Currencies();
-        model.setCode(code.toUpperCase());
-        model.setName(name);
-        model.setSign(sign);
+        model.setCode(codeCut.toUpperCase());
+        model.setName(nameCut);
+        model.setSign(signCut);
 
         try {
             Currencies savedCurrency = currenciesRepository.save(model);
@@ -68,6 +78,7 @@ public class CurrencyServicesImpl implements CurrencyServices {
             throw new MessageException(ErrorMessage.DATABASE_ERROR);
         }
     }
+
 
     private CurrencyDTO convertToDTO(Currencies entity) {
         return new CurrencyDTO(

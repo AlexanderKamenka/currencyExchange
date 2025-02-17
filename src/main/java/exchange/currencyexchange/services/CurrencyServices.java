@@ -3,7 +3,6 @@ package exchange.currencyexchange.services;
 
 import exchange.currencyexchange.dto.CurrencyDTO;
 import exchange.currencyexchange.exceptions.MessageException;
-
 import java.util.List;
 
 public interface CurrencyServices {
@@ -11,4 +10,5 @@ public interface CurrencyServices {
     List<CurrencyDTO> getCurrencies();
 
     CurrencyDTO getCurrencyByCode(String code) throws MessageException;
+
 }
